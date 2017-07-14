@@ -13,4 +13,8 @@ public interface PantsExecutionOptions {
   List<String> getTargetSpecs();
 
   boolean isEnableIncrementalImport();
+
+  int getIncrementalImportDepth();
+
+  void setIncrementalImportDepth(int depth);
 }

@@ -12,6 +12,7 @@ import com.intellij.openapi.externalSystem.model.project.ModuleData;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.module.ModuleTypeId;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
@@ -52,7 +53,7 @@ public class PantsCreateModulesExtension implements PantsResolverExtension {
     Set<TargetInfo> targetInfoWithinLevel = null;
     if (buildGraph.isPresent()) {
       final int maxDepth = buildGraph.get().getMaxDepth();
-      getDepthToImportFromUser(maxDepth);
+      getDepthToImportFromUser(maxDepth, executor);
       if (depthToInclude == null) {
         throw new PantsException("Task cancelled");
       }
@@ -90,11 +91,11 @@ public class PantsCreateModulesExtension implements PantsResolverExtension {
     }
   }
 
-  private void getDepthToImportFromUser(final int maxDepth) {
+  private void getDepthToImportFromUser(final int maxDepth, PantsCompileOptionsExecutor executor) {
     ApplicationManager.getApplication().invokeAndWait(new Runnable() {
       @Override
       public void run() {
-        String result = Messages.showInputDialog(
+        Pair<String, Boolean> result = Messages.showInputDialogWithCheckBox(
           String.format(
             "Enter the depth of transitive dependencies to import min: 0, max: %s.\n" +
             "0: root level.\n" +
@@ -102,13 +103,19 @@ public class PantsCreateModulesExtension implements PantsResolverExtension {
             "%s: entire build graph", maxDepth, maxDepth
           ),
           "Incremental Import",
+          "Do not ask me again",
+          true,
+          true,
           PantsIcons.Icon, //icon
           String.valueOf(maxDepth),  //initial number
           null //validator per keystroke, not necessary in this case.
         );
-        depthToInclude = result == null ? null : Integer.valueOf(result);
+        depthToInclude = result == null ? null : Integer.valueOf(result.first);
         if (depthToInclude == null || depthToInclude < 0 || depthToInclude > maxDepth) {
           throw new PantsException("Invalid input");
+        }
+        if (result.second) {
+          executor.setIncrementalImportDepth(depthToInclude);
         }
       }
     }, ModalityState.NON_MODAL);

@@ -5,6 +5,7 @@ package com.twitter.intellij.pants.settings;
 
 import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings;
 import com.intellij.util.containers.ContainerUtilRt;
+import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
 import com.twitter.intellij.pants.model.PantsCompileOptions;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
   private boolean myLibsWithSources;
   private boolean myEnableIncrementalImport;
   private boolean myUseIdeaProjectJdk;
+  private int myIncrementalImportDepth;
 
   /**
    * @param targetSpecs               targets explicted listed from `pants idea-plugin` goal.
@@ -23,19 +25,22 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
    * @param libsWithSources           whether to import sources and docs when resolving for jars.
    * @param isEnableIncrementalImport whether to enabled incremental import.
    * @param isUseIdeaProjectJdk       whether use IDEA project JDK to compile Pants project.
+   * @param incrementalImportDepth    the depth at which to import incrementally.
    */
   public PantsProjectSettings(
     List<String> targetSpecs,
     String externalProjectPath,
     boolean libsWithSources,
     boolean isEnableIncrementalImport,
-    boolean isUseIdeaProjectJdk
+    boolean isUseIdeaProjectJdk,
+    int incrementalImportDepth
   ) {
     setExternalProjectPath(externalProjectPath);
     myTargetSpecs = targetSpecs;
     myLibsWithSources = libsWithSources;
     myEnableIncrementalImport = isEnableIncrementalImport;
     myUseIdeaProjectJdk = isUseIdeaProjectJdk;
+    myIncrementalImportDepth = incrementalImportDepth;
   }
 
   public PantsProjectSettings() {
@@ -54,7 +59,8 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
     return Objects.equals(myLibsWithSources, other.myLibsWithSources)
            && Objects.equals(myEnableIncrementalImport, other.myEnableIncrementalImport)
            && Objects.equals(myTargetSpecs, other.myTargetSpecs)
-           && Objects.equals(myUseIdeaProjectJdk, other.myUseIdeaProjectJdk);
+           && Objects.equals(myUseIdeaProjectJdk, other.myUseIdeaProjectJdk)
+           && Objects.equals(myIncrementalImportDepth, other.myIncrementalImportDepth);
   }
 
   @NotNull
@@ -73,6 +79,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
       ((PantsProjectSettings) receiver).setTargetSpecs(getTargetSpecs());
       ((PantsProjectSettings) receiver).setEnableIncrementalImport(isEnableIncrementalImport());
       ((PantsProjectSettings) receiver).setUseIdeaProjectJdk(isUseIdeaProjectJdk());
+      ((PantsProjectSettings) receiver).setIncrementalImportDepth(getIncrementalImportDepth());
     }
   }
 
@@ -110,5 +117,13 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
 
   public void setUseIdeaProjectJdk(boolean useIdeaProjectJdk) {
     myUseIdeaProjectJdk = useIdeaProjectJdk;
+  }
+
+  public int getIncrementalImportDepth() {
+    return myIncrementalImportDepth;
+  }
+
+  public void setIncrementalImportDepth(int depth) {
+    myIncrementalImportDepth = depth;
   }
 }

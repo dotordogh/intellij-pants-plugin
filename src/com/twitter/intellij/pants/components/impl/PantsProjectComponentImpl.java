@@ -130,8 +130,9 @@ public class PantsProjectComponentImpl extends AbstractProjectComponent implemen
           final boolean loadLibsAndSources = true;
           final boolean enableIncrementalImport = false;
           final boolean useIdeaProjectJdk = false;
+          int incrementalImportDepth = -1;
           final PantsProjectSettings pantsProjectSettings =
-            new PantsProjectSettings(targetSpecs, projectPath, loadLibsAndSources, enableIncrementalImport, useIdeaProjectJdk);
+            new PantsProjectSettings(targetSpecs, projectPath, loadLibsAndSources, enableIncrementalImport, useIdeaProjectJdk, incrementalImportDepth);
 
           /**
            * Following procedures in {@link com.intellij.openapi.externalSystem.util.ExternalSystemUtil#refreshProjects}:

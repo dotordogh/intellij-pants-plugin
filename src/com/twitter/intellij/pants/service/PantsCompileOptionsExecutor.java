@@ -237,6 +237,14 @@ public class PantsCompileOptionsExecutor {
     return new File(getBuildRoot(), relativePath).getPath();
   }
 
+  public int getIncrementalImportDepth() {
+    return getOptions().getIncrementalImportDepth();
+  }
+
+  public void setIncrementalImportDepth(int depth) {
+    getOptions().setIncrementalImportDepth(depth);
+  }
+
   private static class MyPantsCompileOptions implements PantsCompileOptions {
 
     private final String myExternalProjectPath;
@@ -260,6 +268,14 @@ public class PantsCompileOptionsExecutor {
 
     public boolean isEnableIncrementalImport() {
       return myExecutionOptions.isEnableIncrementalImport();
+    }
+
+    public int getIncrementalImportDepth() {
+      return myExecutionOptions.getIncrementalImportDepth();
+    }
+
+    public void setIncrementalImportDepth(int depth) {
+      myExecutionOptions.setIncrementalImportDepth(depth);
     }
   }
 }

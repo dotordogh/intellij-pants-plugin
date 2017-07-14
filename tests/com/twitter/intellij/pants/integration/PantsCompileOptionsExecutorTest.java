@@ -20,7 +20,8 @@ public class PantsCompileOptionsExecutorTest extends OSSPantsIntegrationTest {
       Collections.singletonList(deepDir),
       false, // include libs and sources. does not matter here
       false, // use idea project jdk. does not matter here.
-      false // incremental imports. does not matter here.
+      false, // incremental imports. does not matter here.
+      -1
     );
 
     PantsCompileOptionsExecutor executor = PantsCompileOptionsExecutor.create(

@@ -87,6 +87,24 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
     getLinkedProjectsSettings().forEach(s -> s.setEnableIncrementalImport(enableIncrementalImport));
   }
 
+  private boolean isDepthValid(PantsProjectSettings item) {
+    return item.getIncrementalImportDepth() > -1;
+  }
+
+  public int getIncrementalImportDepth() {
+
+    //return getLinkedProjectsSettings().stream().anyMatch(item -> isDepthValid(item));
+    if (getLinkedProjectsSettings().stream().anyMatch(item -> isDepthValid(item))) {
+      return getLinkedProjectsSettings().stream().filter(item -> isDepthValid(item)).findAny().get().getIncrementalImportDepth();
+    } else {
+      return -1;
+    }
+  }
+
+  public void setIncrementalImportDepth(int depth) {
+    getLinkedProjectsSettings().forEach(s -> s.setIncrementalImportDepth(depth));
+  }
+
   public int getResolverVersion() {
     return myResolverVersion;
   }
@@ -122,6 +140,7 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
     final MyState state = new MyState();
     state.setResolverVersion(getResolverVersion());
     state.setUseIdeaProjectJdk(isUseIdeaProjectJdk());
+    state.setIncrementalImportDepth(getIncrementalImportDepth());
     fillState(state);
     return state;
   }
@@ -131,6 +150,7 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
     super.loadState(state);
     setResolverVersion(state.getResolverVersion());
     setUseIdeaProjectJdk(state.isUseIdeaProjectJdk());
+    setIncrementalImportDepth(state.getIncrementalImportDepth());
   }
 
   public static class MyState implements State<PantsProjectSettings> {
@@ -138,6 +158,7 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
 
     boolean myUseIdeaProjectJdk = false;
     int myResolverVersion = 0;
+    int myIncrementalImportDepth = -1;
 
     @AbstractCollection(surroundWithTag = false, elementTypes = {PantsProjectSettings.class})
     public Set<PantsProjectSettings> getLinkedExternalProjectsSettings() {
@@ -162,6 +183,14 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
 
     public void setResolverVersion(int resolverVersion) {
       myResolverVersion = resolverVersion;
+    }
+
+    public int getIncrementalImportDepth() {
+      return myIncrementalImportDepth;
+    }
+
+    public void setIncrementalImportDepth(int depth) {
+      myIncrementalImportDepth = depth;
     }
   }
 }

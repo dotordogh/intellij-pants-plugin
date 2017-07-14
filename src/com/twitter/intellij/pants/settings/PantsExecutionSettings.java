@@ -16,18 +16,21 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
   private final boolean myUseIdeaProjectJdk;
   private final boolean myEnableIncrementalImport;
   private final List<String> myTargetSpecs;
+  private int myIncrementalImportDepth;
 
   private static final List<String> DEFAULT_TARGET_SPECS = Collections.emptyList();
   private static final boolean DEFAULT_WITH_SOURCES_AND_DOCS = true;
   private static final boolean DEFAULT_USE_IDEA_PROJECT_SDK = false;
   private static final boolean DEFAULT_ENABLE_INCREMENTAL_IMPORT = false;
+  private static final int DEFAULT_INCREMENTAL_IMPORT_DEPTH = -1;
 
   public static PantsExecutionSettings createDefault() {
     return new PantsExecutionSettings(
       DEFAULT_TARGET_SPECS,
       DEFAULT_WITH_SOURCES_AND_DOCS,
       DEFAULT_USE_IDEA_PROJECT_SDK,
-      DEFAULT_ENABLE_INCREMENTAL_IMPORT
+      DEFAULT_ENABLE_INCREMENTAL_IMPORT,
+      DEFAULT_INCREMENTAL_IMPORT_DEPTH
     );
   }
 
@@ -36,17 +39,20 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
    * @param libsWithSourcesAndDocs  whether to import sources and docs when resolving for jars.
    * @param useIdeaProjectJdk       whether to explicitly use the JDK selected in project for Pants compile.
    * @param enableIncrementalImport whether to incrementally import the project.
+   * @param incrementalImportDepth  incremental import depth of the project.
    */
   public PantsExecutionSettings(
     List<String> targetSpecs,
     boolean libsWithSourcesAndDocs,
     boolean useIdeaProjectJdk,
-    boolean enableIncrementalImport
+    boolean enableIncrementalImport,
+    int incrementalImportDepth
   ) {
     myTargetSpecs = targetSpecs;
     myLibsWithSourcesAndDocs = libsWithSourcesAndDocs;
     myUseIdeaProjectJdk = useIdeaProjectJdk;
     myEnableIncrementalImport = enableIncrementalImport;
+    myIncrementalImportDepth = incrementalImportDepth;
   }
 
   @NotNull
@@ -64,6 +70,14 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
 
   public boolean isEnableIncrementalImport() {
     return myEnableIncrementalImport;
+  }
+
+  public int getIncrementalImportDepth() {
+    return myIncrementalImportDepth;
+  }
+
+  public void setIncrementalImportDepth(int depth) {
+    myIncrementalImportDepth = depth;
   }
 
   @Override
